@@ -1,11 +1,5 @@
-/** EL2208 Praktikum Pemecahan Masalah dengan C 2020/2021
-*   Modul               : 4
-*   Soal                : 1
-*   Hari dan Tanggal    : 
-*   Nama (NIM)          : 
-*   Asisten (NIM)       : 
-*   Nama File           : soal-01.c
-*   Deskripsi           : Deskripsi file ini.
+/*
+Usulan Soal M4 David
 */
 
 // Header
@@ -27,8 +21,6 @@ typedef struct
     float mass;
 } Particle;
 
-// Definisi dari fungsi yang digunakan
-
 /*Alokasikan memori untuk dynamic array of Particle lalu 
 return pointer dari elemen Particle pertama dari array tersebut*/
 Particle *createArray(int arrayCapacity);
@@ -48,30 +40,60 @@ void main()
     Particle *arrayOfParticle = createArray(arrayCapacity);
     Particle input;
     Point output;
-
-    /*
-    Isi implementasi baca input user dan 
-    perhitungan center of mass disini
-    */
-
-    // Cetak solusi
+    int lanjut;
+    // Baca input partikel dari user sampai diberikan input 0 saat pertanyaan lanjut?
+    do
+    {
+        printf("Partikel ke-%d!\n", currIndex + 1);
+        printf("Massa: ");
+        scanf("%f", &input.mass);
+        printf("Koordinat x: ");
+        scanf("%f", &input.coordinate.x);
+        printf("Koordinat y: ");
+        scanf("%f", &input.coordinate.y);
+        printf("Koordinat z: ");
+        scanf("%f", &input.coordinate.z);
+        printf("Lanjut?: ");
+        pushToArray(&arrayOfParticle, input, &currIndex, &arrayCapacity);
+        scanf("%d", &lanjut);
+    } while (lanjut);
+    // Kalkulasi center of mass dengan memodifikasi isi Point output untuk keluarannya
+    calculateCenterMass(&output, arrayOfParticle, &currIndex);
     printf("\nPusat Massa:\n");
+    // Cetak solusi
     printf("Koordinat x: %.2f\n", output.x);
     printf("Koordinat y: %.2f\n", output.y);
     printf("Koordinat z: %.2f\n", output.z);
+    printf("Kapasitas Array: %d\n", arrayCapacity);
     // Jangan lupa free memori yang sudah dialokasikan
     free(arrayOfParticle);
 }
 
 Particle *createArray(int arrayCapacity)
 {
-    /*Isi implementasi fungsinya disini*/
+    return (Particle *)malloc(arrayCapacity * sizeof(Particle));
 }
 void pushToArray(Particle **array, Particle Add, int *idx, int *arrayCapacity)
 {
-    /*Isi implementasi fungsinya disini*/
+    if (*idx >= *arrayCapacity)
+    {
+        (*arrayCapacity) *= 2;
+        *array = (Particle *)realloc(*array, (*arrayCapacity) * sizeof(Particle));
+    }
+    (*array)[*idx] = Add;
+    (*idx)++;
 }
 void calculateCenterMass(Point *output, Particle *array, int *idx)
 {
-    /*Isi implementasi fungsinya disini*/
+    float xSum = 0, ySum = 0, zSum = 0, mSum = 0;
+    for (int i = 0; i < *idx; i++)
+    {
+        xSum += array[i].coordinate.x * array[i].mass;
+        ySum += array[i].coordinate.y * array[i].mass;
+        zSum += array[i].coordinate.z * array[i].mass;
+        mSum += array[i].mass;
+    }
+    output->x = xSum / mSum;
+    output->y = ySum / mSum;
+    output->z = zSum / mSum;
 }
